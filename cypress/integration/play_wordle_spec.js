@@ -1,159 +1,174 @@
-// play_wordle_spec.js created with Cypress
-//
-// Start writing your Cypress tests below!
-// If you're unfamiliar with how Cypress works,
-// check out the link below and learn how to write your first test:
-// https://on.cypress.io/writing-first-test
-
-let i = 0;
-let wordbank = "";
-let presentLetters = [];
-
-describe("Cheatle", () => {
-  beforeEach(() => {
-    wordbank = Wordlist.join(" ");
-
-    // cy.fixture("wordbank")
-    //   .as("wordbankJson")
-    //   .then((json) => (Wordbank = json.wordbank.toLowerCase()));
-  });
-
-  it("Should find the answer", () => {
-    console.log(wordbank.length);
-
-    cy.visit("https://www.nytimes.com/games/wordle/index.html");
-
-    cy.get("game-modal")
-      .shadow()
-      .then((modal) => {
-        modal.find(".close-icon").click();
-
-        makeGuess(["cheat", "cheat".split("")]);
-      });
-  });
-
-  function makeGuess(guess) {
-    const [word, letters] = guess;
-    presentLetters = [];
-
-    enterLetters(letters)
-      .then(() => processAnswer(word, letters, 0))
-      .then(() => processAnswer(word, letters, 1))
-      .then(() => processAnswer(word, letters, 2))
-      .then(() => processAnswer(word, letters, 3))
-      .then(() => processAnswer(word, letters, 4))
-      .then(() => {
-        if (i < 5 || patterns.every((e) => e.length === 1)) {
-          i++;
-          makeGuess(getWord());
-        }
-      });
-  }
-
-  function processAnswer(word, letters, index) {
-    let tile = cy
-      .get(`game-row[letters='${word}']`)
-      .shadow()
-      .find(`game-tile[letter='${letters[index]}']`);
-
-    return tile.invoke("attr", "evaluation").then((evaluation) => {
-      switch (evaluation) {
-        case "absent":
-          removeLetterFromAll(letters[index]);
-          break;
-        case "correct":
-          setLetterAsFound(letters[index], index);
-          break;
-        case "present":
-          presentLetters.push(letters[index]);
-          removeLetterFromColumn(letters[index], index);
-          break;
-      }
-    });
-  }
-
-  function removeLetterFromAll(letter) {
-    patterns.forEach((pattern, index) => {
-      patterns[index] = pattern.replace(letter, "");
-    });
-  }
-
-  function setLetterAsFound(letter, index) {
-    patterns[index] = letter;
-  }
-
-  function removeLetterFromColumn(letter, index) {
-    patterns[index] = patterns[index].replace(letter, "");
-  }
-
-  function getWord() {
-    patterns.forEach((pattern) => console.log(pattern));
-
-    const pattern =
-      `[${patterns[0]}]` +
-      `[${patterns[1]}]` +
-      `[${patterns[2]}]` +
-      `[${patterns[3]}]` +
-      `[${patterns[4]}]`;
-
-    const regex = new RegExp(pattern, "g");
-
-    const filteredWords = wordbank.match(regex).filter((word) => {
-      const arr = word.split("");
-
-      return presentLetters.length === 0
-        ? true
-        : presentLetters.every((letter) => word.includes(letter));
-    });
-
-    console.log("-".repeat(20));
-    console.log(pattern);
-    console.log(filteredWords);
-    console.log("-".repeat(20));
-
-    const nextWord =
-      filteredWords[Cypress._.random(0, filteredWords.length - 1)];
-
-    return [nextWord, nextWord.split("")];
-  }
-
-  function enterLetters(letters) {
-    enter(letters[0]);
-    enter(letters[1]);
-    enter(letters[2]);
-    enter(letters[3]);
-    enter(letters[4]);
-    enter(EnterKey);
-
-    return cy.wait(2600);
-  }
-
-  function enter(key) {
-    cy.get("game-keyboard").shadow().find(`button[data-key='${key}']`).click();
-  }
-});
-
 const ButtonStates = ["absent", "correct", "present"];
 const EnterKey = "↵";
+const MaxTries = 6;
 
 let patterns = [
-  "abcdefghijklmnopqrstuvwxyz",
-  "abcdefghijklmnopqrstuvwxyz",
-  "abcdefghijklmnopqrstuvwxyz",
-  "abcdefghijklmnopqrstuvwxyz",
-  "abcdefghijklmnopqrstuvwxyz",
+    "abcdefghijklmnopqrstuvwxyz",
+    "abcdefghijklmnopqrstuvwxyz",
+    "abcdefghijklmnopqrstuvwxyz",
+    "abcdefghijklmnopqrstuvwxyz",
+    "abcdefghijklmnopqrstuvwxyz",
 ];
 
 let pattern =
-  "^" +
-  `[abcdefghijklmnopqrstuvwxyz]` +
-  `[abcdefghijklmnopqrstuvwxyz]` +
-  `[abcdefghijklmnopqrstuvwxyz]` +
-  `[abcdefghijklmnopqrstuvwxyz]` +
-  `[abcdefghijklmnopqrstuvwxyz]` +
-  "$";
+    "^" +
+    `[abcdefghijklmnopqrstuvwxyz]` +
+    `[abcdefghijklmnopqrstuvwxyz]` +
+    `[abcdefghijklmnopqrstuvwxyz]` +
+    `[abcdefghijklmnopqrstuvwxyz]` +
+    `[abcdefghijklmnopqrstuvwxyz]` +
+    "$";
 
-const Wordlist = [
+let remainingWords = "";
+let lastRunPresentLetters = [];
+let lastRunResults = [];
+let tryCount = 0;
+
+describe("Cheatle", () => {
+    beforeEach(() => {
+        remainingWords = FullWordList.sort().join(" ");
+    });
+
+    it("Should find the answer", () => {
+        cy.visit("https://www.nytimes.com/games/wordle/index.html");
+
+        cy.get("game-modal")
+            .shadow()
+            .then((modal) => {
+                modal.find(".close-icon").click();
+                enterGuess(updateRemainingWordsAndPickGuess());
+            });
+    });
+
+    function enterGuess(word) {
+        const letters = word.split("");
+        lastRunPresentLetters = [];
+        lastRunResults = [];
+        tryCount++;
+
+        enterLetters(letters)
+            .then(() => addLetterResult(word, letters, 0))
+            .then(() => addLetterResult(word, letters, 1))
+            .then(() => addLetterResult(word, letters, 2))
+            .then(() => addLetterResult(word, letters, 3))
+            .then(() => addLetterResult(word, letters, 4))
+            .then(() => {
+                if (lastRunResults.every(({ evaluation }) => evaluation === "correct")) {
+                    console.log("🤩🤩🤩 Success! 🤩🤩🤩");
+
+                    return;
+                }
+
+                if (tryCount === MaxTries) {
+                    // This will probably never happen
+                    console.log("😭😭😭 Failed to find the Wordle! 😭😭😭");
+
+                    return;
+                }
+
+                lastRunResults.forEach(({ letter, index, evaluation }) => {
+                    switch (evaluation) {
+                        case "absent":
+                            // Sometimes a letter will be marked absent and present/correct in the same guess.
+                            // If that happens, just remove it from the one column.
+                            if (lastRunResults.some((s) => s.letter === letter && s.evaluation !== "absent")) {
+                                removeLetterFromColumn(letter, index);
+                            } else {
+                                removeLetterFromAll(letter);
+                            }
+                            break;
+                        case "correct":
+                            setLetterAsFound(letter, index);
+                            break;
+                        case "present":
+                            lastRunPresentLetters.push(letter);
+                            removeLetterFromColumn(letter, index);
+                            break;
+                    }
+                });
+
+                enterGuess(updateRemainingWordsAndPickGuess());
+            });
+    }
+
+    function enterLetters(letters) {
+        enterLetter(letters[0]);
+        enterLetter(letters[1]);
+        enterLetter(letters[2]);
+        enterLetter(letters[3]);
+        enterLetter(letters[4]);
+        enterLetter(EnterKey);
+
+        return cy.wait(2600);
+    }
+
+    function enterLetter(key) {
+        cy.get("game-keyboard").shadow().find(`button[data-key='${key}']`).click();
+    }
+
+    function addLetterResult(word, letters, index) {
+        let tile = cy
+            .get(`game-row[letters='${word}']`)
+            .shadow()
+            .find(`game-tile[letter='${letters[index]}']:nth-child(${index + 1})`);
+
+        return tile.invoke("attr", "evaluation").then((evaluation) => {
+            lastRunResults.push({ letter: letters[index], index, evaluation });
+        });
+    }
+
+    function removeLetterFromAll(letter) {
+        patterns.forEach((pattern, index) => {
+            patterns[index] = pattern.replace(letter, "");
+        });
+    }
+
+    function setLetterAsFound(letter, index) {
+        patterns[index] = letter;
+    }
+
+    function removeLetterFromColumn(letter, index) {
+        patterns[index] = patterns[index].replace(letter, "");
+    }
+
+    function updateRemainingWordsAndPickGuess() {
+        // Build search pattern for remaining words
+        const pattern =
+            `[${patterns[0]}]` + `[${patterns[1]}]` + `[${patterns[2]}]` + `[${patterns[3]}]` + `[${patterns[4]}]`;
+
+        // For funsies, log current pattern
+        console.log(pattern);
+
+        // Create regular expression to do a global search on the remaining words
+        const regex = new RegExp(pattern, "g");
+
+        // Out of the remaining possible words, select only words that contain the "present in wrong position" letters
+        const possibleWords = remainingWords
+            .match(regex)
+            .filter((word) =>
+                lastRunPresentLetters.length === 0
+                    ? true
+                    : lastRunPresentLetters.every((letter) => word.includes(letter))
+            );
+
+        // Updating remaining words
+        remainingWords = possibleWords.join(" ");
+
+        // For funsies, log remaining words
+        if (remainingWords.length > 128) {
+            console.log(remainingWords.substring(0, 128) + "...");
+        } else {
+            console.log(remainingWords);
+        }
+
+        // Select a random word out of the remaining choices
+        const nextGuess = possibleWords[Cypress._.random(0, possibleWords.length - 1)];
+
+        return nextGuess;
+    }
+});
+
+const FullWordList = [
     "cigar",
     "rebut",
     "sissy",
@@ -2463,8 +2478,6 @@ const Wordlist = [
     "artsy",
     "rural",
     "shave",
-  ],
-  Oa = [
     "aahed",
     "aalii",
     "aargh",
@@ -13103,4 +13116,4 @@ const Wordlist = [
     "zygon",
     "zymes",
     "zymic",
-  ];
+];
