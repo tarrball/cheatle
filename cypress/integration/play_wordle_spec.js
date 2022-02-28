@@ -20,14 +20,14 @@ let searchPattern =
     `[abcdefghijklmnopqrstuvwxyz]` +
     '$';
 
-let remainingWords = '';
+let remainingWordString = '';
 let lastRunPresentLetters = [];
 let lastRunResults = [];
 let tryCount = 0;
 
 describe('Cheatle', () => {
     beforeEach(() => {
-        remainingWords = FullWordList.sort().join(' ');
+        remainingWordString = FullWordList.sort().join(' ');
     });
 
     it('Should find the answer', () => {
@@ -144,7 +144,7 @@ describe('Cheatle', () => {
         const regex = new RegExp(pattern, 'g');
 
         // Out of the remaining possible words, select only words that contain the 'present in wrong position' letters
-        const possibleWordList = remainingWords
+        const possibleWordList = remainingWordString
             .match(regex)
             .filter((word) =>
                 lastRunPresentLetters.length === 0
@@ -153,20 +153,20 @@ describe('Cheatle', () => {
             );
 
         // Updating remaining words
-        remainingWords = possibleWordList.join(' ');
+        remainingWordString = possibleWordList.join(' ');
 
         // For funsies, log remaining words
-        if (remainingWords.length > 128) {
-            console.log(remainingWords.substring(0, 128) + '...');
+        if (remainingWordString.length > 128) {
+            console.log(remainingWordString.substring(0, 128) + '...');
         } else {
-            console.log(remainingWords);
+            console.log(remainingWordString);
         }
 
-        const distinctCharacterPossibleWordList = possibleWordList.filter((f) => f.match(DistinctCharacterPattern));
+        const smartGuessList = possibleWordList.filter((f) => f.match(DistinctCharacterPattern));
 
         // If possible, pick a word that doesn't have repeat characters
-        if (distinctCharacterPossibleWordList.length > 0) {
-            return distinctCharacterPossibleWordList[Cypress._.random(0, distinctCharacterPossibleWordList.length - 1)];
+        if (smartGuessList.length > 0) {
+            return smartGuessList[Cypress._.random(0, smartGuessList.length - 1)];
         } else {
             possibleWordList[Cypress._.random(0, possibleWordList.length - 1)];
         }
