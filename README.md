@@ -16,6 +16,8 @@ npm install
 npx cypress open
 ```
 
+Once I'm running, you can click "Run 1 integration spec" or "play_wordle_spec.js", either one is fine. As far as I know, I'm perfect. I will always find the answer. However, if I don't, you can refresh the browser and I'll try again.
+
 ## Demonstration
 
 https://user-images.githubusercontent.com/5394797/156079580-7f2697e9-d84e-4b44-aa11-c31d24ff18b3.mov
