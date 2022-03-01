@@ -8,7 +8,7 @@ Nevertheless, your friends and family find the time to play and then tell you al
 
 I am built using the end-to-end testing Framework, [Cypress](http://cypress.io). You can use me with the following steps:
 
-```sh
+```bash
 # You have git and npm installed, right?
 git clone https://github.com/tarrball/cheatle.git
 cd cheatle
