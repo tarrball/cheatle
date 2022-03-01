@@ -168,7 +168,7 @@ describe('Cheatle', () => {
         if (smartGuessList.length > 0) {
             return smartGuessList[Cypress._.random(0, smartGuessList.length - 1)];
         } else {
-            possibleWordList[Cypress._.random(0, possibleWordList.length - 1)];
+            return possibleWordList[Cypress._.random(0, possibleWordList.length - 1)];
         }
     }
 });
