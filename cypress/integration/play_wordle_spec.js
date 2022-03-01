@@ -41,6 +41,46 @@ describe('Cheatle', () => {
             });
     });
 
+    function updateRemainingWordsAndPickGuess() {
+        // Build search pattern for remaining words
+        const pattern =
+            `[${possibleCharacters[0]}]` + `[${possibleCharacters[1]}]` + `[${possibleCharacters[2]}]` + `[${possibleCharacters[3]}]` + `[${possibleCharacters[4]}]`;
+
+        // For funsies, log current pattern
+        console.log(pattern);
+
+        // Create regular expression to do a global search on the remaining words
+        const regex = new RegExp(pattern, 'g');
+
+        // Out of the remaining possible words, select only words that contain the 'present in wrong position' letters
+        const possibleWordList = remainingWordString
+            .match(regex)
+            .filter((word) =>
+                lastRunPresentLetters.length === 0
+                    ? true
+                    : lastRunPresentLetters.every((letter) => word.includes(letter))
+            );
+
+        // Updating remaining words
+        remainingWordString = possibleWordList.join(' ');
+
+        // For funsies, log remaining words
+        if (remainingWordString.length > 128) {
+            console.log(remainingWordString.substring(0, 128) + '...');
+        } else {
+            console.log(remainingWordString);
+        }
+
+        const smartGuessList = possibleWordList.filter((f) => f.match(DistinctCharacterPattern));
+
+        // If possible, pick a word that doesn't have repeat characters
+        if (smartGuessList.length > 0) {
+            return smartGuessList[Cypress._.random(0, smartGuessList.length - 1)];
+        } else {
+            return possibleWordList[Cypress._.random(0, possibleWordList.length - 1)];
+        }
+    }
+
     function enterGuess(word) {
         const letters = word.split('');
         lastRunPresentLetters = [];
@@ -55,14 +95,13 @@ describe('Cheatle', () => {
             .then(() => addLetterResult(word, letters, 4))
             .then(() => {
                 if (lastRunResults.every(({ evaluation }) => evaluation === 'correct')) {
-                    console.log('🤩🤩🤩 Success! 🤩🤩🤩');
+                    const result = lastRunResults.map(m => m.letter).join('');
+                    assert.isTrue('success', `🤩🤩🤩 The Wordle is ${result}! 🤩🤩🤩`);
 
                     return;
-                }
-
-                if (tryCount === MaxTries) {
+                } else if (tryCount === MaxTries) {
                     // This will probably never happen
-                    console.log('😭😭😭 Failed to find the Wordle! 😭😭😭');
+                    throw '😭😭😭 Failed to find the Wordle! 😭😭😭';
 
                     return;
                 }
@@ -130,46 +169,6 @@ describe('Cheatle', () => {
 
     function removeLetterFromColumn(letter, index) {
         possibleCharacters[index] = possibleCharacters[index].replace(letter, '');
-    }
-
-    function updateRemainingWordsAndPickGuess() {
-        // Build search pattern for remaining words
-        const pattern =
-            `[${possibleCharacters[0]}]` + `[${possibleCharacters[1]}]` + `[${possibleCharacters[2]}]` + `[${possibleCharacters[3]}]` + `[${possibleCharacters[4]}]`;
-
-        // For funsies, log current pattern
-        console.log(pattern);
-
-        // Create regular expression to do a global search on the remaining words
-        const regex = new RegExp(pattern, 'g');
-
-        // Out of the remaining possible words, select only words that contain the 'present in wrong position' letters
-        const possibleWordList = remainingWordString
-            .match(regex)
-            .filter((word) =>
-                lastRunPresentLetters.length === 0
-                    ? true
-                    : lastRunPresentLetters.every((letter) => word.includes(letter))
-            );
-
-        // Updating remaining words
-        remainingWordString = possibleWordList.join(' ');
-
-        // For funsies, log remaining words
-        if (remainingWordString.length > 128) {
-            console.log(remainingWordString.substring(0, 128) + '...');
-        } else {
-            console.log(remainingWordString);
-        }
-
-        const smartGuessList = possibleWordList.filter((f) => f.match(DistinctCharacterPattern));
-
-        // If possible, pick a word that doesn't have repeat characters
-        if (smartGuessList.length > 0) {
-            return smartGuessList[Cypress._.random(0, smartGuessList.length - 1)];
-        } else {
-            return possibleWordList[Cypress._.random(0, possibleWordList.length - 1)];
-        }
     }
 });
 
