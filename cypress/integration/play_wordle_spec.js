@@ -96,7 +96,7 @@ describe('Cheatle', () => {
             .then(() => {
                 if (lastRunResults.every(({ evaluation }) => evaluation === 'correct')) {
                     const result = lastRunResults.map(m => m.letter).join('');
-                    assert.isTrue('success', `🤩🤩🤩 The Wordle is ${result}! 🤩🤩🤩`);
+                    assert.isOk('success', `🤩🤩🤩 The Wordle is ${result}! 🤩🤩🤩`);
 
                     return;
                 } else if (tryCount === MaxTries) {
