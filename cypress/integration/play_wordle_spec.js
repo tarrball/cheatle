@@ -102,8 +102,6 @@ describe('Cheatle', () => {
                 } else if (tryCount === MaxTries) {
                     // This will probably never happen
                     throw '😭😭😭 Failed to find the Wordle! 😭😭😭';
-
-                    return;
                 }
 
                 lastRunResults.forEach(({ letter, index, evaluation }) => {
