@@ -33,3 +33,11 @@ jobs:
       with:
         name: daily-screenshot.png
         path: ${{ github.workspace }}/cypress/screenshots/play_wordle_spec.js/result-screenshot.png  
+        
+    - uses: deka0106/upload-to-dropbox@v2.0.0
+      with:
+        dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
+        src: daily-screenshot.png
+        dest: /wordle/
+        mode: overwrite
+        
