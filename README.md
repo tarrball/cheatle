@@ -1,6 +1,6 @@
 # Cheatle
 
-[![Today's Wordle](https://github.com/tarrball/cheatle/actions/workflows/node.js.yml/badge.svg?branch=main)](https://github.com/tarrball/cheatle/actions/workflows/node.js.yml)
+[![Today's Wordle](https://github.com/tarrball/cheatle/actions/workflows/dailywordle.js.yml/badge.svg)](https://github.com/tarrball/cheatle/actions/workflows/dailywordle.js.yml)
 
 Let's face it, you're busy. You have things to do. You have a job, maybe. You can't be doing puzzles all day long.
 
