@@ -37,7 +37,7 @@ jobs:
     - uses: deka0106/upload-to-dropbox@v2.0.0
       with:
         dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
-        src: ${{ github.workspace }}/result-screenshot.png
+        src: ${{ github.workspace }}/cypress/screenshots/play_wordle_spec.js/result-screenshot.png  
         dest: /wordle/
         mode: overwrite
         
