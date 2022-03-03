@@ -28,16 +28,11 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npx cypress run
-
-    - uses: actions/upload-artifact@v2
-      with:
-        name: daily-screenshot.png
-        path: ${{ github.workspace }}/cypress/screenshots/play_wordle_spec.js/result-screenshot.png  
         
     - uses: deka0106/upload-to-dropbox@v2.0.0
       with:
         dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
         src: ${{ github.workspace }}/cypress/screenshots/play_wordle_spec.js/result-screenshot.png  
-        dest: /wordle/
+        dest: /wordle/daily-screenshot.png
         mode: overwrite
         
