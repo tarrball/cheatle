@@ -31,5 +31,5 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: result-screenshot
-        path: /home/runner/work/cheatle/cheatle/cypress/screenshots/play_wordle_spec.js/result-screenshot.png  
+        name: daily-screenshot.png
+        path: ${{ github.workspace }}/cypress/screenshots/play_wordle_spec.js/result-screenshot.png  
