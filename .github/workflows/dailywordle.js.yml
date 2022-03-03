@@ -36,6 +36,6 @@ jobs:
         
     - name: commit
       run: |
-        git add ${{ github.workspace }}/cypress/screenshots/play_wordle_spec.js/result-screenshot.png  
+        git add -f ${{ github.workspace }}/cypress/screenshots/play_wordle_spec.js/result-screenshot.png  
         git commit -m "Updating screenshot"
         git push origin main
