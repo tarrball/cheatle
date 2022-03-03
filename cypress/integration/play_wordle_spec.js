@@ -27,12 +27,12 @@ let tryCount = 0;
 
 describe('Cheatle', () => {
     beforeEach(() => {
+        cy.visit('');
+
         remainingWordString = FullWordList.sort().join(' ');
     });
 
     it('Should find the answer', () => {
-        cy.visit('https://www.nytimes.com/games/wordle/index.html');
-
         cy.get('game-modal')
             .shadow()
             .then((modal) => {
@@ -98,9 +98,11 @@ describe('Cheatle', () => {
                     const result = lastRunResults.map(m => m.letter).join('');
                     assert.isOk('success', `🤩🤩🤩 The Wordle is ${result}! 🤩🤩🤩`);
 
+                    // Capture this moment for posterity
+                    cy.screenshot('result-screenshot');
+
                     return;
                 } else if (tryCount === MaxTries) {
-                    // This will probably never happen
                     throw '😭😭😭 Failed to find the Wordle! 😭😭😭';
                 }
 
