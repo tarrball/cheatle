@@ -10,8 +10,6 @@ Nevertheless, your friends and family find the time to play and then tell you al
 
 ![Today's Results](https://github.com/tarrball/cheatle/blob/main/cypress/screenshots/play_wordle_spec.js/result-screenshot.png)
 
-https://github.com/tarrball/cheatle/blob/main/cypress/videos/play_wordle_spec.js.mp4
-
 ## Usage
 
 I am built using the end-to-end testing Framework, [Cypress](http://cypress.io). You can use me with the following steps:

@@ -36,7 +36,6 @@ jobs:
         
     - name: commit
       run: |
-        git add -f ${{ github.workspace }}/cypress/screenshots/play_wordle_spec.js/result-screenshot.png  
-        git add -f ${{ github.workspace }}/cypress/videos/play_wordle_spec.js.mp4
+        git add -f ${{ github.workspace }}/cypress/screenshots/play_wordle_spec.js/result-screenshot.png
         git commit -m "Updating daily results"
         git push origin main
