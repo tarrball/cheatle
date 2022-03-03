@@ -29,10 +29,13 @@ jobs:
     - run: npm ci
     - run: npx cypress run
         
-    - uses: deka0106/upload-to-dropbox@v2.0.0
-      with:
-        dropbox_access_token: ${{ secrets.DROPBOX_ACCESS_TOKEN }}
-        src: ${{ github.workspace }}/cypress/screenshots/play_wordle_spec.js/result-screenshot.png  
-        dest: /wordle/daily-screenshot.png
-        mode: overwrite
+    - name: setup git config
+      run: |      
+        git config user.name "GitHub Actions Bot"
+        git config user.email "<>"
         
+    - name: commit
+      run: |
+        git add -f ${{ github.workspace }}/cypress/screenshots/play_wordle_spec.js/result-screenshot.png  
+        git commit -m "Updating screenshot"
+        git push origin main
