@@ -1,7 +1,7 @@
 # Cheatle
 
-<!-- [![Today's Wordle](https://github.com/tarrball/cheatle/actions/workflows/dailywordle.js.yml/badge.svg)](https://github.com/tarrball/cheatle/actions/workflows/dailywordle.js.yml)
- -->
+[![Today's Wordle](https://github.com/tarrball/cheatle/actions/workflows/dailywordle.js.yml/badge.svg)](https://github.com/tarrball/cheatle/actions/workflows/dailywordle.js.yml)
+
 Let's face it, you're busy. You have things to do. You have a job, maybe. You can't be doing puzzles all day long.
 
 Nevertheless, your friends and family find the time to play and then tell you all about the fun they have with [Wordle](https://www.nytimes.com/games/wordle/index.html). You wish you had a robot to solve the puzzle for you. I, Cheatle, am that robot.
