@@ -4,6 +4,8 @@
 name: Today's Wordle
 
 on:
+  schedule:
+    - cron:  '0 14 * * *'
   push:
     branches: [ main ]
   pull_request:
