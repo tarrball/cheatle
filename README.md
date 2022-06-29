@@ -2,7 +2,7 @@
 
 ## Update 6/29/22
 
-the Wordle markup has been completely reworked. So as of now, Cheatle is broken.
+The Wordle markup has been completely reworked. So as of now, Cheatle is broken.
 
 [![Today's Wordle](https://github.com/tarrball/cheatle/actions/workflows/dailywordle.js.yml/badge.svg)](https://github.com/tarrball/cheatle/actions/workflows/dailywordle.js.yml)
 
