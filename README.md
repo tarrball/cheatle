@@ -8,7 +8,7 @@ The Wordle markup has been completely reworked. This broke Cheatle, and I won't 
 
 ## Last Solved Puzzle
 
-![Last Solved Puzzle](https://github.com/tarrball/cheatle/blob/main/cypress/screenshots/play_wordle_spec.js/result-screenshot.png)
+![Last Solved Puzzle](https://github.com/tarrball/cheatle/blob/main/result-screenshot.png)
 
 ## Old Introduction
 
