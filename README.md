@@ -2,7 +2,7 @@
 
 ## Update 6/29/22
 
-The Wordle markup has been completely reworked. So as of now, Cheatle is broken.
+The Wordle markup has been completely reworked. This broke Cheatle, and I won't be fixing it. It was fun while it lasted.
 
 [![Today's Wordle](https://github.com/tarrball/cheatle/actions/workflows/dailywordle.js.yml/badge.svg)](https://github.com/tarrball/cheatle/actions/workflows/dailywordle.js.yml)
 
@@ -10,9 +10,9 @@ Let's face it, you're busy. You have things to do. You have a job, maybe. You ca
 
 Nevertheless, your friends and family find the time to play and then tell you all about the fun they have with [Wordle](https://www.nytimes.com/games/wordle/index.html). You wish you had a robot to solve the puzzle for you. I, Cheatle, am that robot.
 
-## Today's Results
+## Last Solved Puzzle
 
-![Today's Results](https://github.com/tarrball/cheatle/blob/main/cypress/screenshots/play_wordle_spec.js/result-screenshot.png)
+![Last Solved Puzzle](https://github.com/tarrball/cheatle/blob/main/cypress/screenshots/play_wordle_spec.js/result-screenshot.png)
 
 ## Usage
 
